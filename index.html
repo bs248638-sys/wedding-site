@@ -478,24 +478,111 @@
       padding: 8px;
       background: repeating-linear-gradient(45deg, #0d0f17, #0d0f17 8px, #12141f 8px, #12141f 16px);
     }
+
+    /* --- 수정된 라이트박스 CSS --- */
     #lightbox {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 2000;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0, 0, 0, 0.92);
       align-items: center;
       justify-content: center;
-      cursor: zoom-out;
-      padding: 30px;
+      padding: 20px;
+      user-select: none;
+      touch-action: pan-y;
     }
     #lightbox.active { display: flex; }
+    
+    .lightbox-img-wrapper {
+      position: relative;
+      max-width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     #lightbox img {
       max-width: 100%;
-      max-height: 100%;
+      max-height: 85vh;
       border-radius: 8px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      object-fit: contain;
+      pointer-events: none; /* 드래그 이벤트 간섭 방지 */
     }
+
+    /* 라이트박스 전용 컨트롤 버튼 */
+    .lb-btn {
+      position: absolute;
+      background: rgba(18, 21, 32, 0.75);
+      border: 1px solid var(--border);
+      color: #fff;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      z-index: 2100;
+      backdrop-filter: blur(8px);
+    }
+    .lb-btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    /* 닫기 (X) 버튼 */
+    .lb-close-btn {
+      top: 20px;
+      right: 20px;
+      font-size: 22px;
+    }
+
+    /* 뒤로가기 (←) 버튼 */
+    .lb-back-btn {
+      top: 20px;
+      left: 20px;
+      font-size: 20px;
+    }
+
+    /* 좌/우 네비게이션 버튼 */
+    .lb-prev-btn {
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .lb-next-btn {
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* 하단 라이트박스 캡션 */
+    .lb-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18, 21, 32, 0.85);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      max-width: 80vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      z-index: 2100;
+    }
+
     .photo-filename {
       font-family: monospace;
       font-weight: 700;
@@ -758,8 +845,19 @@
   </main>
 
   <div id="toast">복사 완료!</div>
-  <div id="lightbox" onclick="closeLightbox()">
-    <img id="lightboxImg" src="" alt="원본 사진">
+
+  <!-- 라이트박스 구조 수정 -->
+  <div id="lightbox">
+    <button class="lb-btn lb-back-btn" onclick="closeLightbox()" title="뒤로가기">←</button>
+    <button class="lb-btn lb-close-btn" onclick="closeLightbox()" title="닫기">✕</button>
+    <button class="lb-btn lb-prev-btn" onclick="navigateLightbox(-1)" title="이전 사진">◀</button>
+    <button class="lb-btn lb-next-btn" onclick="navigateLightbox(1)" title="다음 사진">▶</button>
+    
+    <div class="lightbox-img-wrapper">
+      <img id="lightboxImg" src="" alt="원본 사진">
+    </div>
+    
+    <div class="lb-caption" id="lightboxCaption"></div>
   </div>
 
   <script>
@@ -993,20 +1091,88 @@
       }
     ];
 
-    // 사진 파일이 들어있는 폴더 경로 (index.html 기준 상대경로)
-    // 예: index.html과 같은 위치에 "photos" 폴더를 만들고 그 안에 사진을 넣으면 됩니다.
     const PHOTO_BASE_PATH = './photos/';
 
     let currentIdx = 0;
     let currentView = 'slide';
 
-    function openLightbox(src) {
-      const lb = document.getElementById('lightbox');
-      document.getElementById('lightboxImg').src = src;
-      lb.classList.add('active');
+    // 모든 사진 목록 평탄화 (라이트박스 순회 탐색용)
+    let allPhotosList = [];
+    slides.forEach((s, sIdx) => {
+      s.files.forEach((f, fIdx) => {
+        allPhotosList.push({
+          ...f,
+          slideNumber: s.slideNumber,
+          slideTitle: s.titleKo,
+          slideIndex: sIdx,
+          fileIndex: fIdx
+        });
+      });
+    });
+
+    let currentLightboxPhotoIdx = 0;
+
+    function openLightbox(filename) {
+      const pIdx = allPhotosList.findIndex(p => p.filename === filename);
+      if (pIdx !== -1) {
+        currentLightboxPhotoIdx = pIdx;
+        updateLightboxContent();
+        document.getElementById('lightbox').classList.add('active');
+      }
     }
+
+    function updateLightboxContent() {
+      const photo = allPhotosList[currentLightboxPhotoIdx];
+      const img = document.getElementById('lightboxImg');
+      const caption = document.getElementById('lightboxCaption');
+      
+      img.src = PHOTO_BASE_PATH + photo.filename;
+      caption.innerHTML = `<strong>[SLIDE 0${photo.slideNumber}]</strong> ${photo.filename} (${currentLightboxPhotoIdx + 1} / ${allPhotosList.length}) - ${photo.description}`;
+    }
+
+    function navigateLightbox(step) {
+      currentLightboxPhotoIdx = (currentLightboxPhotoIdx + step + allPhotosList.length) % allPhotosList.length;
+      updateLightboxContent();
+    }
+
     function closeLightbox() {
       document.getElementById('lightbox').classList.remove('active');
+    }
+
+    // 라이트박스 스와이프 및 드래그 이벤트 구현
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const lightboxEl = document.getElementById('lightbox');
+
+    lightboxEl.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    lightboxEl.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    lightboxEl.addEventListener('mousedown', (e) => {
+      // 버튼 클릭 시에는 드래그 동작 제외
+      if (e.target.tagName === 'BUTTON') return;
+      touchStartX = e.clientX;
+    });
+
+    lightboxEl.addEventListener('mouseup', (e) => {
+      if (e.target.tagName === 'BUTTON') return;
+      touchEndX = e.clientX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeThreshold = 50; // 스와이프 감지 문턱값
+      if (touchEndX < touchStartX - swipeThreshold) {
+        navigateLightbox(1); // 왼쪽 스와이프 -> 다음 사진
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        navigateLightbox(-1); // 오른쪽 스와이프 -> 이전 사진
+      }
     }
 
     function showToast(msg) {
@@ -1115,14 +1281,13 @@
             <div class="photos-grid">
               ${s.files.map(f => `
                 <div class="photo-card ${f.highlight ? 'highlight' : ''}">
-                  <div class="photo-thumb-wrap" onclick="openLightbox('${PHOTO_BASE_PATH}${f.filename}')">
+                  <div class="photo-thumb-wrap" onclick="openLightbox('${f.filename}')">
                     <img src="${PHOTO_BASE_PATH}${f.filename}" alt="${f.filename}" loading="lazy"
                          onerror="this.style.display='none'; this.parentElement.querySelector('.photo-thumb-missing').style.display='flex';">
                     <div class="photo-thumb-missing" style="display:none;">사진 없음<br>${f.filename}</div>
                   </div>
                   <div class="photo-filename">
-                    <span>${f.filename}</span>
-                    ${f.highlight ? '<span class="photo-star">★대표</span>' : ''}
+                    <span>${f.filename}</span>${f.highlight ? '<span class="photo-star">★대표</span>' : ''}
                   </div>
                   <div class="photo-desc">${f.description}</div>
                 </div>
@@ -1149,7 +1314,7 @@
           </td>
           <td>
             <div style="max-height: 120px; overflow-y: auto; font-family: monospace; font-size: 11px;">
-              ${s.files.map(f => `<div style="${f.highlight ? 'color: #fde68a; font-weight: bold;' : 'color: #94a3b8;'}">${f.filename} ${f.highlight ? '★' : ''}</div>`).join('')}
+              ${s.files.map(f => `<div style="${f.highlight ? 'color: #fde68a; font-weight: bold;' : 'color: #94a3b8;'}">${f.filename}${f.highlight ? '★' : ''}</div>`).join('')}
             </div>
           </td>
           <td>
@@ -1200,7 +1365,17 @@
       }
     }
 
+    // 키보드 네비게이션 (라이트박스 활성화 시 사진 이동 / 비활성화 시 슬라이드 이동)
     window.addEventListener('keydown', (e) => {
+      const lightboxActive = document.getElementById('lightbox').classList.contains('active');
+      
+      if (lightboxActive) {
+        if (e.key === 'ArrowRight') navigateLightbox(1);
+        if (e.key === 'ArrowLeft') navigateLightbox(-1);
+        if (e.key === 'Escape') closeLightbox();
+        return;
+      }
+
       if (currentView !== 'slide') return;
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
         e.preventDefault();
@@ -1213,7 +1388,7 @@
 
     function copySlideFull(idx) {
       const s = slides[idx];
-      const text = `[슬라이드 0${s.slideNumber}] ${s.titleKo}\n영문: ${s.titleEn}\n키워드: ${s.keywords.join(' ')}\n촬영시간: ${s.timeSlot}\n\n[헤어/메이크업/의상]\n• 신부: ${s.styling.brideDress}\n• 신랑: ${s.styling.groomSuit}\n• 헤어: ${s.styling.hair}\n• 메이크업: ${s.styling.makeup}\n• 부케/소품: ${s.styling.bouquet} / ${s.styling.props}\n\n[작가님 전달 메모]\n${s.direction.pose.map(p => '- ' + p).join('\n')}\n${s.direction.directorNote}\n\n[매핑 사진 (${s.files.length}장)]\n${s.files.map((f, i) => `${i+1}. ${f.filename} : ${f.description}`).join('\n')}`;
+      const text = `[슬라이드 0${s.slideNumber}] ${s.titleKo}\n영문: ${s.titleEn}\n키워드: ${s.keywords.join(' ')}\n촬영시간: ${s.timeSlot}\n\n[헤어/메이크업/의상]\n• 신부: ${s.styling.brideDress}\n• 신랑: ${s.styling.groomSuit}\n• 헤어: ${s.styling.hair}\n• 메이크업: ${s.styling.makeup}\n• 부케/소품: ${s.styling.bouquet} / ${s.styling.props}\n\n[작가님 전달 메모]\n${s.direction.pose.map(p => '- ' + p).join('\n')}\n${s.direction.directorNote}\n\n[매핑 사진 (${s.files.length}장)]\n${s.files.map((f, i) => `${i+1}. ${f.filename} :${f.description}`).join('\n')}`;
       copyToClipboard(text, `슬라이드 0${s.slideNumber} 전체 복사 완료!`);
     }
 
@@ -1238,7 +1413,7 @@
     function copyFullCanvaText() {
       let text = "========================================================================\n[웨딩 스냅 캔바(Canva) PPT 시안 - 총 76장 레퍼런스 분석본]\n========================================================================\n\n";
       slides.forEach(s => {
-        text += `------------------------------------------------------------------------\n[슬라이드 0${s.slideNumber}] ${s.titleKo}\n키워드: ${s.keywords.join(' ')}\n시간대: ${s.timeSlot}\n\n[헤어/메이크업/의상]\n• 신부: ${s.styling.brideDress}\n• 신랑: ${s.styling.groomSuit}\n• 헤어: ${s.styling.hair}\n• 메이크업: ${s.styling.makeup}\n• 부케: ${s.styling.bouquet} / 소품: ${s.styling.props}\n\n[작가님 전달 메모]\n${s.direction.pose.map(p => '- ' + p).join('\n')}\n${s.direction.directorNote}\n\n[사진 목록 (${s.files.length}장)]\n${s.files.map((f, i) => `${i+1}. ${f.filename} : ${f.description}`).join('\n')}\n\n`;
+        text += `------------------------------------------------------------------------\n[슬라이드 0${s.slideNumber}] ${s.titleKo}\n키워드: ${s.keywords.join(' ')}\n시간대: ${s.timeSlot}\n\n[헤어/메이크업/의상]\n• 신부: ${s.styling.brideDress}\n• 신랑: ${s.styling.groomSuit}\n• 헤어: ${s.styling.hair}\n• 메이크업: ${s.styling.makeup}\n• 부케: ${s.styling.bouquet} / 소품: ${s.styling.props}\n\n[작가님 전달 메모]\n${s.direction.pose.map(p => '- ' + p).join('\n')}\n${s.direction.directorNote}\n\n[사진 목록 (${s.files.length}장)]\n${s.files.map((f, i) => `${i+1}. ${f.filename} :${f.description}`).join('\n')}\n\n`;
       });
       copyToClipboard(text, '전체 6개 슬라이드 캔바 텍스트 복사 완료!');
     }
@@ -1282,30 +1457,23 @@
     renderBulkTable();
   </script>
 
-<script>
-// 성능 최적화
-document.addEventListener('DOMContentLoaded', () => {
-  // 비활성 슬라이드 DOM 제거 후 필요 시 렌더
-  const originalRenderSlides = window.renderSlides;
-  if (originalRenderSlides) {
-    const wrapped = function() {
-      requestAnimationFrame(() => originalRenderSlides());
-    };
-    window.renderSlides = wrapped;
-  }
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const originalRenderSlides = window.renderSlides;
+    if (originalRenderSlides) {
+      const wrapped = function() {
+        requestAnimationFrame(() => originalRenderSlides());
+      };
+      window.renderSlides = wrapped;
+    }
 
-  // 썸네일 네비게이션 스크롤 최적화
-  const pills = document.getElementById('slidePills');
-  if (pills) {
-    pills.style.scrollBehavior = 'smooth';
-  }
+    const pills = document.getElementById('slidePills');
+    if (pills) {
+      pills.style.scrollBehavior = 'smooth';
+    }
 
-  // 키보드 이벤트 passive 처리
-  window.addEventListener('keydown', ()=>{}, {passive:true});
-
-  console.log('Wedding Draft Optimized');
-});
-</script>
-
+    console.log('Wedding Draft Optimized & Swipe Ready');
+  });
+  </script>
 </body>
 </html>
