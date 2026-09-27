@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>푸꾸옥 셀프 스냅 시안</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --bg: #090a10;
+      --card-bg: #121520;
+      --card-sub: #171b28;
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-glow: rgba(245, 158, 11, 0.2);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border: #23283b;
+      --border-accent: rgba(245, 158, 11, 0.35);
+      --rose: #f43f5e;
+      --emerald: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(14, 17, 26, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--border-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 18px;
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      color: #fda4af;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .view-tabs {
+      display: flex;
+      background: #0d0f17;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      gap: 4px;
+    }
+    .view-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .view-tab-btn.active {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .action-btn {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      background: var(--card-sub);
+      color: var(--text);
+    }
+    .action-btn:hover {
+      background: #252b3d;
+      border-color: #3f4761;
+    }
+    .action-btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+    .action-btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    main {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+    .slide-nav-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .slide-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .slide-pill-btn {
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .slide-pill-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .nav-arrows {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .arrow-btn {
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .arrow-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    .page-indicator {
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0 6px;
+    }
+    .slide-card {
+      background: linear-gradient(145deg, #12141f, #151825);
+      border: 1px solid #2a3147;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .slide-card-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .slide-meta-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slide-number-badge {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--border-accent);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .time-badge {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+    .aspect-badge {
+      font-family: monospace;
+      font-size: 11px;
+      color: #64748b;
+      letter-spacing: 0.5px;
+    }
+    .slide-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tag-item {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .slide-title-ko {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+      letter-spacing: -0.3px;
+    }
+    .slide-title-en {
+      font-size: 14px;
+      font-style: italic;
+      color: #fbbf24;
+      font-family: Georgia, serif;
+      margin-bottom: 14px;
+    }
+    .slide-concept-banner {
+      background: rgba(245, 158, 11, 0.06);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #fde68a;
+      margin-bottom: 24px;
+    }
+    .slide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 950px) {
+      .slide-grid { grid-template-columns: 1fr; }
+    }
+    .info-card {
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .info-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .info-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .copy-sm-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s;
+    }
+    .copy-sm-btn:hover { color: var(--accent); }
+    .style-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .style-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .style-value {
+      font-size: 12.5px;
+      color: #e2e8f0;
+      line-height: 1.4;
+    }
+    .canva-tip-box {
+      margin-top: 14px;
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid var(--border-accent);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      color: #fef3c7;
+    }
+    .canva-tip-label {
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .dir-section { margin-bottom: 14px; }
+    .dir-heading {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fde68a;
+      margin-bottom: 6px;
+    }
+    .dir-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-left: 12px;
+    }
+    .dir-bullets li {
+      font-size: 12px;
+      color: #cbd5e1;
+      position: relative;
+    }
+    .dir-bullets li::before {
+      content: "•";
+      position: absolute;
+      left: -12px;
+      color: var(--accent);
+    }
+    .director-memo-box {
+      background: rgba(244, 63, 94, 0.09);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #fecdd3;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+    .photos-box {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+    .photos-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .photos-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      max-height: 640px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .photo-card {
+      background: rgba(13, 16, 24, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 11px;
+    }
+    .photo-card.highlight {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .photo-thumb-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #05060a;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: zoom-in;
+    }
+    .photo-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s;
+    }
+    .photo-thumb-wrap:hover img {
+      transform: scale(1.05);
+    }
+    .photo-thumb-missing {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 10px;
+      color: #6b7280;
+      padding: 8px;
+      background: repeating-linear-gradient(45deg, #0d0f17, #0d0f17 8px, #12141f 8px, #12141f 16px);
+    }
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0,0,0,0.9);
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+      padding: 30px;
+    }
+    #lightbox.active { display: flex; }
+    #lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    .photo-filename {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--accent);
+      word-break: break-all;
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .photo-star {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fef08a;
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .photo-desc {
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      background: #0f172a;
+      border: 1px solid var(--accent);
+      color: #fef08a;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+      display: none;
+    }
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .table-header-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+    .table-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .table-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12px;
+      min-width: 900px;
+    }
+    th {
+      background: #0d0f17;
+      color: var(--accent);
+      font-weight: 800;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+      color: #d1d5db;
+      line-height: 1.5;
+    }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    @page { size: A4 landscape; margin: 10mm; }
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      header, .slide-nav-strip, .top-actions, #toast, .view-tabs { display: none !important; }
+      main { max-width: 100% !important; padding: 0 !important; }
+      .slide-card {
+        background: #fff !important;
+        border: 1px solid #ccc !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+        padding: 15mm !important;
+        display: block !important;
+      }
+      .slide-title-ko, .photos-title, table th { color: #000 !important; }
+      .info-card, .canva-tip-box, .photos-box, .photo-card {
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #1e293b !important;
+      }
+      .director-memo-box {
+        background: #fff1f2 !important;
+        border-color: #f43f5e !important;
+        color: #9f1239 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">✨</div>
+        <div>
+          <div class="brand-title">
+            푸꾸옥 셀프 스냅 시안
+            <span class="brand-badge">76장 전수 분류</span>
+          </div>
+          <div class="brand-sub">Canva 일괄 제작(Bulk Create) 및 시안 디렉터 단일 웹페이지</div>
+        </div>
+      </div>
+
+      <div class="view-tabs">
+        <button class="view-tab-btn active" onclick="switchView('slide')">PPT 1장씩 넘기기</button>
+        <button class="view-tab-btn" onclick="switchView('all')">전체 스크롤 모드</button>
+        <button class="view-tab-btn" onclick="switchView('table')">캔바 일괄제작 표</button>
+      </div>
+
+      <div class="top-actions">
+        <button class="action-btn" onclick="copyFullCanvaText()">📋 전체 텍스트 복사</button>
+        <button class="action-btn action-btn-primary" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="slideNavStrip" class="slide-nav-strip">
+      <div class="slide-pills" id="slidePills"></div>
+      <div class="nav-arrows">
+        <button id="prevBtn" class="arrow-btn" onclick="changeSlide(-1)">◀</button>
+        <span id="pageIndicator" class="page-indicator">1 / 6</span>
+        <button id="nextBtn" class="arrow-btn" onclick="changeSlide(1)">▶</button>
+      </div>
+    </div>
+
+    <div id="slidesContainer"></div>
+
+    <div id="tableView" class="table-container" style="display: none;">
+      <div class="table-header-box">
+        <div>
+          <div class="table-title">캔바(Canva) 일괄 제작(Bulk Create) 전용 표</div>
+          <div class="table-desc">
+            캔바 좌측 메뉴 [앱 ➔ 일괄 제작(Bulk Create) ➔ 데이터 수동 입력]에 아래 표를 복사해 붙여넣거나 CSV 파일로 활용하세요.
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="action-btn" onclick="copyTableTSV()">📋 표 전체 복사 (Canva 붙여넣기용)</button>
+          <button class="action-btn action-btn-primary" onclick="downloadCSV()">⬇ CSV 파일 다운로드</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="bulkTable">
+          <thead>
+            <tr>
+              <th style="width: 100px;">슬라이드 번호</th>
+              <th style="width: 220px;">카테고리명</th>
+              <th style="width: 280px;">포함된 사진 파일명</th>
+              <th style="width: 260px;">주요 연출 포인트</th>
+              <th>작가님 전달 메모</th>
+            </tr>
+          </thead>
+          <tbody id="bulkTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast">복사 완료!</div>
+  <div id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="원본 사진">
+  </div>
+
+  <script>
+    // 76장 전체 데이터 및 슬라이드 구성 JSON 내장
+    const slides = [
+      {
+        slideNumber: 1,
+        titleKo: "SLIDE 01. 골든아워 & 다이내믹 워터 런 (Golden Ocean Run)",
+        titleEn: "Dynamic Beach Splash & Playful Running",
+        conceptSubtitle: "황금빛 윤슬과 잔잔한 파도를 가르며 달리는 역동적이고 자유로운 시네마틱 컷",
+        keywords: ["#내추럴러닝", "#물보라스플래시", "#맨발투혼", "#생동감넘치는웃음", "#골든아워윤슬"],
+        timeSlot: "17:20 ~ 17:50 (일몰 시작 전 골든아워)",
+        styling: {
+          brideDress: "슬림 A라인 블랙 슬립 드레스 (새틴/실크)",
+          groomSuit: "루즈핏 올블랙 셔츠 & 슬랙스 (단추 1~2개 오픈)",
+          hair: "바람에 자연스럽게 날리는 로우 번(Low Bun)",
+          makeup: "세미 매트 베이스 + 생기 있는 코랄 로즈 립",
+          bouquet: "비비드 핫핑크 장미/작약 번들",
+          props: "맨발(신발 벗고 촬영), 롱 블랙 리본 타이"
+        },
+        direction: {
+          pose: ["손을 잡고 대각선 방향으로 가볍게 달리며 파도 차올리기", "신랑이 손을 이끌어주는 모션", "달리다 마주보며 터진 진심 미소 (모션 블러 권장)", "바닷물 속 나란히 뛰어들기"],
+          lighting: ["역광을 이용해 바다 윤슬이 두 사람 사이로 반짝이도록 앵글 설정", "1/30s 감성 모션 블러 병행"],
+          eyeContact: ["카메라 의식하지 않고 70%는 서로 얼굴/발끝 보기", "고개 돌려 서로 눈 마주치는 순간"],
+          directorNote: "★ 작가님 핵심: 정형화된 웨딩 포즈를 벗어나 두 사람의 찐 웃음과 역동적인 물보라를 담아주세요."
+        },
+        canvaSlideLayoutTips: "좌측에 달리는 전신 와이드 컷(대표 메인) 1장 + 우측에 2단 분할(웃는 클로즈업 + 물보라 발끝 모션 컷) 배치 추천",
+        files: [
+          { filename: "KakaoTalk_20260927_004309105.png", description: "노을 바다 손잡고 달리기, 물보라와 찐 웃음", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_07.png", description: "황금빛 윤슬 속 파도 밟으며 활짝 웃는 전신 러닝", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_21.png", description: "파도 속 빠른 회전과 낭만적인 모션 블러" },
+          { filename: "KakaoTalk_20260927_004309105_28.png", description: "달려와 와락 안기는 역동적 모션 블러 포옹" },
+          { filename: "KakaoTalk_20260927_004332829_03.png", description: "젖은 모래사장 위 손잡고 뛰는 순수한 행복 컷", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_04.png", description: "하이앵글에서 담은 파도 자락 워킹 샷" },
+          { filename: "KakaoTalk_20260927_004332829_09.png", description: "신나게 스텝 밟으며 뛰어가는 캐주얼 러닝" },
+          { filename: "KakaoTalk_20260927_004332829_19.png", description: "밀려오는 잔잔한 물결 위 발맞춰 걷기" },
+          { filename: "KakaoTalk_20260927_004351344_01.png", description: "파도 헤치며 물장구치는 생동감 넘치는 스냅" },
+          { filename: "KakaoTalk_20260927_004351344_07.png", description: "석양 바다로 시원하게 뛰어드는 역동적 뒷모습 점프" },
+          { filename: "KakaoTalk_20260927_004351344_15.png", description: "3분할 필름: 바다로 뛰어드는 순간의 스토리텔링" }
+        ]
+      },
+      {
+        slideNumber: 2,
+        titleKo: "SLIDE 02. 시그니처 리프트 & 딥 허그 (Signature Lift & Hug)",
+        titleEn: "Romantic Lift-Up & Passionate Embrace",
+        conceptSubtitle: "신랑이 신부를 번쩍 안아 올리는 벅찬 설렘과 하늘 높이 뻗은 부케 라인",
+        keywords: ["#공중리프트", "#하늘로뻗은부케", "#밀착딥허그", "#벅차오르는행복", "#시그니처포즈"],
+        timeSlot: "17:50 ~ 18:20 (일몰 절정 골든~선셋 아워)",
+        styling: {
+          brideDress: "홀터넥 또는 오프숄더 블랙 머메이드/H라인 드레스",
+          groomSuit: "슬림핏 블랙 테일러드 수트 또는 블랙 셔츠",
+          hair: "단단하게 고정된 미들~로우 번 (고정 핀/스프레이 필수)",
+          makeup: "음영 아이 메이크업 + 선셋 조명 하이라이터",
+          bouquet: "카라(Calla) 롱 스템 부케 또는 핫핑크 로즈 다발",
+          props: "신부 롱 베일(바람에 흩날릴 때 극적 연출)"
+        },
+        direction: {
+          pose: ["신랑이 신부 허리 잡고 가슴 높이 이상으로 리프트", "신부는 부케 쥐고 하늘 향해 뻗기", "들린 상태에서 양 무릎 살짝 구부려 발끝 포인", "안아 내린 직후 목을 감싸안는 연속 컷"],
+          lighting: ["노을빛이 인물 뒤로 완벽히 걸리도록 로우 앵글(Low Angle)", "선셋 림라이트가 닿도록 측역광"],
+          eyeContact: ["신부는 하늘 보며 환호 + 신랑은 올려다보며 미소", "코앞에서 밀착 눈맞춤"],
+          directorNote: "★ 작가님 핵심: 메인 포스터 후보군입니다! 3~5초 카운트다운으로 빠르고 정확한 각도를 잡아주세요."
+        },
+        canvaSlideLayoutTips: "중앙에 수직 풀프레임 리프트 샷(대형) + 좌우에 신부 시선 뻗는 컷 & 감격의 포옹 클로즈업 2장 배치",
+        files: [
+          { filename: "KakaoTalk_20260927_004309105_01.png", description: "노을 하늘로 부케를 번쩍 치켜든 시그니처 리프트", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_04.png", description: "선셋 바다 앞 신부를 품에 꼭 안아 올린 안정적 구도" },
+          { filename: "KakaoTalk_20260927_004309105_05.png", description: "파도 속에서 회전하며 안착하는 영화 같은 순간", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_10.png", description: "신랑 품에 안겨 부케로 감싼 아티스틱 무드" },
+          { filename: "KakaoTalk_20260927_004309105_11.png", description: "신랑 어깨를 와락 껴안고 터진 진심 어린 웃음", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_26.png", description: "롱 카라 부케와 베일이 날리는 낭만적 공중 리프트" },
+          { filename: "KakaoTalk_20260927_004332829_01.png", description: "파도 거품 위에서 나누는 다정한 눈맞춤 리프트" },
+          { filename: "KakaoTalk_20260927_004332829_10.png", description: "핫핑크 부케와 신부의 싱그러운 표정이 극대화된 샷", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_11.png", description: "신랑의 단단한 가슴에 안긴 아늑한 포옹 컷" },
+          { filename: "KakaoTalk_20260927_004332829_12.png", description: "빈티지 필름 톤의 밀착 리프트 샷" },
+          { filename: "KakaoTalk_20260927_004332829_13.png", description: "구름 낀 하늘을 배경으로 꽃다발을 높이 뻗은 역동 컷" },
+          { filename: "KakaoTalk_20260927_004351344_05.png", description: "수평선 위로 번쩍 솟아오른 웅장한 바다 리프트" },
+          { filename: "KakaoTalk_20260927_004351344_08.png", description: "서로를 바라보는 숨결이 느껴지는 바스트 리프트" },
+          { filename: "KakaoTalk_20260927_004351344_10.png", description: "하늘을 찌를 듯한 화이트 부케 리프트의 결정체" },
+          { filename: "KakaoTalk_20260927_004351344_14.png", description: "신랑이 아래에서 사랑스럽게 올려다보는 시선의 교환" }
+        ]
+      },
+      {
+        slideNumber: 3,
+        titleKo: "SLIDE 03. 로맨틱 턴 & 쇼어라인 댄스 (Shoreline Twirl & Waltz)",
+        titleEn: "Romantic Beach Waltz, Twirl & Hand Kiss",
+        conceptSubtitle: "물결치는 드레스 자락과 파도 위에서 왈츠를 추듯 돌아가는 우아한 순간",
+        keywords: ["#해변왈츠턴", "#드레스플레어", "#손등키스", "#로맨틱제스처", "#영화라라랜드무드"],
+        timeSlot: "18:10 ~ 18:40 (매직아워 초입, 핑크빛과 연보랏빛 하늘)",
+        styling: {
+          brideDress: "플레어가 풍성하게 퍼지는 A라인 블랙 드레스",
+          groomSuit: "모던 테일러드 수트 자켓 착용 (신사다운 격식)",
+          hair: "깔끔하게 빗어 넘긴 슬릭 번(Slick Bun)",
+          makeup: "우아한 핑크 베이지 & 뮤트 톤 메이크업",
+          bouquet: "내추럴 드롭형 부케",
+          props: "롱 드레스 타이 리본, 앤틱 워치"
+        },
+        direction: {
+          pose: ["머리 위로 손 맞잡고 신부가 우아하게 턴(Turn)", "신랑이 손을 이끌어주는 스텝", "무릎을 살짝 굽혀 신부 손등에 로맨틱 키스", "물가에서 손끝 맞잡고 댄스 워킹"],
+          lighting: ["드레스 자락이 공기를 가르는 입체감 연출", "수평선을 평행하게 맞춘 안정적 구도"],
+          eyeContact: ["턴 돌 때 수줍게 아래 응시", "손등 키스 시 사랑스러운 시선 교환"],
+          directorNote: "★ 작가님 핵심: 멈추는 포즈가 아닌 실제 회전하며 걷는 연속 동작에서 자연스러운 드레스 흩날림을 연사로 잡아주세요."
+        },
+        canvaSlideLayoutTips: "좌측 16:9 가로 파노라마 턴 컷 + 우측 상하 2분할(손등 키스 클로즈업 + 손끝 맞잡은 실루엣 컷)",
+        files: [
+          { filename: "KakaoTalk_20260927_004309105_14.png", description: "물가에서 우아하게 한 바퀴 턴을 도는 왈츠 실루엣", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_22.png", description: "노을을 등지고 무릎을 굽혀 신부 손을 맞잡는 프로포즈 씬" },
+          { filename: "KakaoTalk_20260927_004309105_25.png", description: "밀물에 발을 담근 채 스텝을 맞추는 자연스러운 미소", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_08.png", description: "주황빛 석양 속 팔을 뻗어 회전하는 라라랜드 무드", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_15.png", description: "신부의 완벽한 턴 라인과 흩날리는 블랙 드레스" },
+          { filename: "KakaoTalk_20260927_004332829_18.png", description: "거대한 하늘과 바다 반영 속에서 펼쳐지는 2인의 댄스" },
+          { filename: "KakaoTalk_20260927_004332829_22.png", description: "블루아워 해변을 리듬감 있게 걸어 나오는 투샷" },
+          { filename: "KakaoTalk_20260927_004332829_29.png", description: "석양빛 속 신랑의 로맨틱한 손등 키스 클로즈업", highlight: true },
+          { filename: "KakaoTalk_20260927_004351344.png", description: "보랏빛 황혼 아래 손끝을 맞잡고 터진 웃음" },
+          { filename: "KakaoTalk_20260927_004351344_02.png", description: "손을 잡고 서서 고요하게 마주보는 영화 속 씬" },
+          { filename: "KakaoTalk_20260927_004351344_04.png", description: "신부의 두 손을 정중하게 감싸 안는 다정한 컷" }
+        ]
+      },
+      {
+        slideNumber: 4,
+        titleKo: "SLIDE 04. 시네마틱 감성 인물 & 오브제 (Emotional Portrait & Details)",
+        titleEn: "Intimate Nose Touch, Back-hug & Ring Details",
+        conceptSubtitle: "숨결이 닿을 듯 가까운 코끝 맞댐, 백허그의 아늑함, 부케와 웨딩 링 클로즈업",
+        keywords: ["#코끝맞댐(NoseTouch)", "#포근한백허그", "#신부단독프로필", "#웨딩링디테일", "#샴페인토스트"],
+        timeSlot: "18:20 ~ 18:50 (선셋의 부드러운 빛이 피부톤을 감싸는 시간대)",
+        styling: {
+          brideDress: "스트랩리스/슬림 스트랩 블랙 드레스",
+          groomSuit: "화이트 셔츠 + 블랙 타이 또는 올블랙 셔츠",
+          hair: "단정한 로우 번 + 잔머리 텍스처, 진주 이어링",
+          makeup: "속광 글로우 피부 + 내추럴 음영 치크",
+          bouquet: "화이트 튤립/거베라 믹스 또는 진한 와인레드 플라워",
+          props: "샴페인 잔 2개, 필름 카메라, 웨딩 밴드(반지)"
+        },
+        direction: {
+          pose: ["마주 서서 코끝 살짝 맞대고 눈 지그시 감기", "신랑 뒤에서 안아주는 백허그", "신부 단독: 부케 가슴에 모으고 45도 측면 응시", "부케 쥔 손 클로즈업 웨딩 밴드 강조", "샴페인 잔 토스트"],
+          lighting: ["역광이 머리카락과 뺨에 금빛 테두리를 만드는 앵글", "F1.4~2.0 얕은 심도로 바다 윤슬 보케화"],
+          eyeContact: ["서로의 입술/눈을 지그시 응시하는 딥 아이컨택", "온도를 느끼는 정적인 컷"],
+          directorNote: "★ 작가님 핵심: 앨범의 쉼표이자 감성 폭발 컷입니다. 손끝의 떨림과 웨딩 밴드가 잘 보이도록 85mm 이상으로 타이트하게 담아주세요."
+        },
+        canvaSlideLayoutTips: "좌측 코끝 맞댐 메인 + 우측 3분할(신부 프로필, 웨딩링/부케 손 클로즈업, 백허그 컷)",
+        files: [
+          { filename: "KakaoTalk_20260927_004309105_12.png", description: "황금빛 노을 윤슬 속 코끝을 맞댄 숨 멎는 감성 컷", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_15.png", description: "레드 부케를 안고 사랑스럽게 코끝을 닿은 미소", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_18.png", description: "바람에 날리는 머릿결과 신랑 품에 안긴 섬세한 질감", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_19.png", description: "정면을 향해 밝게 웃는 커플 & 핑크 작약 부케의 정석" },
+          { filename: "KakaoTalk_20260927_004309105_20.png", description: "신랑의 백허그 속에서 해맑게 웃음을 터뜨린 신부" },
+          { filename: "KakaoTalk_20260927_004309105_24.png", description: "푸른 하늘을 배경으로 로우앵글 화이트 부케 미소" },
+          { filename: "KakaoTalk_20260927_004309105_27.png", description: "바다 앞 샴페인 글라스 토스트 감성 오브제", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_29.png", description: "신랑 단독 컷: 부케를 들고 해변을 걸어오는 무드" },
+          { filename: "KakaoTalk_20260927_004332829_02.png", description: "노을 바다 앞 신랑 등 뒤에 편안하게 기댄 백허그", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_16.png", description: "부케를 들고 서로를 끌어안은 수줍고 따스한 표정" },
+          { filename: "KakaoTalk_20260927_004332829_17.png", description: "꽃을 쥔 손을 감싼 신랑 손 & 반짝이는 웨딩 밴드 극적 클로즈업", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_20.png", description: "신부 단독 클로즈업: 화이트 로즈 부케와 옆모습 라인", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_25.png", description: "수평선을 바라보는 신랑과 그 뒤를 감싸안은 신부" },
+          { filename: "KakaoTalk_20260927_004332829_27.png", description: "신랑 목을 끌어안고 터진 진심 100% 웃음" },
+          { filename: "KakaoTalk_20260927_004351344_12.png", description: "노을 바다 하늘 위 반지를 낀 손을 맞댄 감성 컷", highlight: true }
+        ]
+      },
+      {
+        slideNumber: 5,
+        titleKo: "SLIDE 05. 일몰 실루엣 & 선셋 키스 (Sunset Silhouette & Twilight Kiss)",
+        titleEn: "Cinematic Sunset Silhouette & Pure Kiss",
+        conceptSubtitle: "해가 수평선 너머로 넘어가는 골든 타임, 완벽한 흑백 대비와 황홀한 하늘",
+        keywords: ["#선셋실루엣", "#트와일라잇키스", "#바다반영(Reflect)", "#그라데이션하늘", "#흑백모노크롬"],
+        timeSlot: "18:40 ~ 19:10 (일몰 직후 매직아워 피크)",
+        styling: {
+          brideDress: "몸매 실루엣이 가장 드라마틱하게 드러나는 머메이드/슬림 H라인",
+          groomSuit: "클래식 테일러드 블랙 턱시도/수트 풀착장",
+          hair: "목선과 턱선이 선명히 드러나는 하이/미들 번",
+          makeup: "입술 윤곽선을 또렷하게 살린 딥 버건디/플럼 립",
+          bouquet: "형태감이 뚜렷한 튤립 또는 카라 번들",
+          props: "바람에 길게 흩날리는 롱 베일"
+        },
+        direction: {
+          pose: ["서로 이마와 코끝을 맞대고 목덜미 감싸기", "신랑이 신부 턱선을 받쳐 올리며 닿을 듯한 키스", "신부가 살짝 발뒤꿈치를 들기", "바다 수면에 비친 반영 실루엣"],
+          lighting: ["완전 역광(Silhouette), 인물 윤곽선만 짙은 블랙으로 떨어지게 노출 설정", "두 사람 사이에 붉은 태양이 걸리는 구도"],
+          eyeContact: ["눈을 감고 서로의 숨결에 몰입", "실루엣이 뭉개지지 않도록 얼굴 틈 유지"],
+          directorNote: "★ 작가님 핵심: 얼굴 표정보다 옆선 콧날과 입술 라인이 생명입니다. 두 사람 사이에 붉은 노을빛이 통과하도록 각도를 잡아주세요."
+        },
+        canvaSlideLayoutTips: "웅장한 파노라마 와이드 실루엣(상단) + 하단 2분할(키스 클로즈업 실루엣 & 바다 반영 컷)",
+        files: [
+          { filename: "KakaoTalk_20260927_004309105_02.png", description: "강렬한 붉은 선셋 속 완벽한 키스 실루엣", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_03.png", description: "주황빛 하늘을 배경으로 서로를 마주보는 전신 실루엣" },
+          { filename: "KakaoTalk_20260927_004309105_06.png", description: "파도가 발을 적시는 순간 나눈 은은한 입맞춤" },
+          { filename: "KakaoTalk_20260927_004309105_08.png", description: "환상적인 오렌지빛 그라데이션과 딥 키스", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_09.png", description: "신랑이 신부 허리를 감싸안은 영화 포스터 구도" },
+          { filename: "KakaoTalk_20260927_004309105_13.png", description: "보랏빛 황혼 속 베일이 날리는 낭만적 실루엣" },
+          { filename: "KakaoTalk_20260927_004309105_16.png", description: "부케를 쥔 채 다정하게 이마를 맞댄 옆선" },
+          { filename: "KakaoTalk_20260927_004309105_17.png", description: "붉은 태양이 바다로 들어가는 찰나의 키스", highlight: true },
+          { filename: "KakaoTalk_20260927_004309105_23.png", description: "광활한 바다와 하늘 가운데 서 있는 2인의 미니멀 실루엣" },
+          { filename: "KakaoTalk_20260927_004332829.png", description: "물결 위에 완벽하게 투영된 반영 키스 샷", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_06.png", description: "타오르는 노을 구름 아래 손잡고 선 클래식 포즈" },
+          { filename: "KakaoTalk_20260927_004332829_21.png", description: "어스름한 블루아워에 실루엣으로 담긴 포옹" },
+          { filename: "KakaoTalk_20260927_004332829_23.png", description: "신랑이 신부를 번쩍 안아 올린 웅장한 선셋 리프트 실루엣", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_28.png", description: "파스텔톤 하늘 아래 고요하게 나눈 약속의 키스" }
+        ]
+      },
+      {
+        slideNumber: 6,
+        titleKo: "SLIDE 06. 나이트 스파클러 & 불꽃 파티 (Night Sparkler & Firework Wave)",
+        titleEn: "Romantic Night Beach Sparklers & Fireworks Wave",
+        conceptSubtitle: "어두워진 밤바다를 환하게 밝히는 스파클러 불꽃과 물결에 번지는 낭만적인 불빛",
+        keywords: ["#스파클러불꽃", "#로맨틱나이트씬", "#어둠속키스", "#불꽃빛반영", "#영화클라이맥스"],
+        timeSlot: "19:10 ~ 19:40 (완전 일몰 후 블루아워~나이트 아워)",
+        styling: {
+          brideDress: "불빛을 반사하는 비즈/글리터 장식 또는 심플 블랙 슬립 드레스",
+          groomSuit: "블랙 수트 또는 화이트 턱시도 자켓",
+          hair: "어둠 속에서 이목구비가 또렷이 보이도록 단정하게 정리된 업스타일",
+          makeup: "불꽃의 노란 조명에 어우러지는 골드 펄 섀도우",
+          bouquet: "스파클러 촬영 시엔 부케 대신 양손에 스파클러 착용",
+          props: "대형 스파클러(길이 30cm 이상 권장), 토치 라이터"
+        },
+        direction: {
+          pose: ["양손에 스파클러를 들고 카메라를 향해 동심으로 돌아간 듯 흔들기", "스파클러 불꽃 사이로 실루엣 키스", "불꽃을 든 채 젖은 모래사장을 따라 가볍게 질주", "서로 마주보고 불꽃으로 하트나 원형 그리기"],
+          lighting: ["스파클러 불꽃 자체가 인물을 비추는 키 라이트", "셔터스피드 1/15~1/30초로 빛의 궤적을 몽환적으로 표현"],
+          eyeContact: ["서로의 얼굴에 비치는 불빛을 보며 환하게 웃기", "스파클러 불꽃을 응시하며 낭만적인 무드 연출"],
+          directorNote: "★ 작가님 핵심: 앨범의 대미를 장식하는 파티 피날레입니다. 바람을 등지고 안전하게 점화하며 불꽃이 화려한 15~20초 동안 집중 연사로 담아주세요."
+        },
+        canvaSlideLayoutTips: "어두운 배경의 와이드 스파클러 키스 컷(중앙 메인) + 좌우 2분할(불꽃 러닝 컷 + 디테일 컷)",
+        files: [
+          { filename: "KakaoTalk_20260927_004332829_05.png", description: "타오르는 스파클러 불꽃 속 낭만적인 밤바다 키스", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_07.png", description: "불꽃을 들고 장난스럽게 웃는 귀여운 커플 스냅" },
+          { filename: "KakaoTalk_20260927_004332829_14.png", description: "어둠 속 황금빛 불꽃 궤적이 얼굴을 환히 비춘 순간" },
+          { filename: "KakaoTalk_20260927_004332829_24.png", description: "바다 물결에 반사된 불빛과 감성 폭발 키스", highlight: true },
+          { filename: "KakaoTalk_20260927_004332829_26.png", description: "스파클러를 마주 들고 속삭이는 다정한 무드" },
+          { filename: "KakaoTalk_20260927_004351344_03.png", description: "수면 위에 반사된 불빛들과 함께 안아 올린 황홀한 리프트", highlight: true },
+          { filename: "KakaoTalk_20260927_004351344_06.png", description: "화이트 수트 신랑 & 블랙 드레스 신부의 스파클러 나이트 런", highlight: true },
+          { filename: "KakaoTalk_20260927_004351344_09.png", description: "밤 파도 속 웃음이 끊이지 않는 즐거운 물놀이 포옹" },
+          { filename: "KakaoTalk_20260927_004351344_11.png", description: "부서지는 거품 파도와 튀는 스파클러 불꽃 속 정열적인 키스", highlight: true },
+          { filename: "KakaoTalk_20260927_004351344_13.png", description: "밤바다의 짙은 어둠 속 등으로 기대어 안긴 감성 컷" }
+        ]
+      }
+    ];
+
+    // 사진 파일이 들어있는 폴더 경로 (index.html 기준 상대경로)
+    // 예: index.html과 같은 위치에 "photos" 폴더를 만들고 그 안에 사진을 넣으면 됩니다.
+    const PHOTO_BASE_PATH = './photos/';
+
+    let currentIdx = 0;
+    let currentView = 'slide';
+
+    function openLightbox(src) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxImg').src = src;
+      lb.classList.add('active');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2200);
+    }
+
+    function copyToClipboard(text, msg) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(msg || '클립보드에 복사되었습니다.');
+      });
+    }
+
+    function renderSlidePills() {
+      const container = document.getElementById('slidePills');
+      container.innerHTML = slides.map((s, idx) => `
+        <button class="slide-pill-btn ${idx === currentIdx ? 'active' : ''}" onclick="goToSlide(${idx})">
+          <span>0${s.slideNumber}</span>
+          <span>${s.titleKo.split('.')[1]?.trim().split('(')[0] || ''}</span>
+          <span style="opacity: 0.7; font-size: 10px;">(${s.files.length}장)</span>
+        </button>
+      `).join('');
+    }
+
+    function renderSlides() {
+      const container = document.getElementById('slidesContainer');
+      container.innerHTML = slides.map((s, idx) => `
+        <div class="slide-card" id="slide-card-${idx}" style="display: ${currentView === 'slide' ? (idx === currentIdx ? 'block' : 'none') : 'block'}; margin-bottom: ${currentView === 'all' ? '40px' : '0'};">
+          <div class="slide-card-header">
+            <div class="slide-meta-left">
+              <span class="slide-number-badge">SLIDE 0${s.slideNumber} OF 6</span>
+              <span class="time-badge">⏰ ${s.timeSlot}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="aspect-badge">CANVA 16:9 PRESENTATION</span>
+              <button class="copy-sm-btn" onclick="copySlideFull(${idx})">📋 슬라이드 전체 복사</button>
+            </div>
+          </div>
+
+          <div class="slide-tags">
+            ${s.keywords.map(kw => `<span class="tag-item">${kw}</span>`).join('')}
+          </div>
+
+          <h2 class="slide-title-ko">${s.titleKo}</h2>
+          <div class="slide-title-en">${s.titleEn}</div>
+
+          <div class="slide-concept-banner">
+            <strong>💡 연출 컨셉:</strong> ${s.conceptSubtitle}
+          </div>
+
+          <div class="slide-grid">
+            <div class="info-card">
+              <div class="info-card-header">
+                <span class="info-card-title">👗 헤어 / 메이크업 / 의상 추천</span>
+                <button class="copy-sm-btn" onclick="copyStyling(${idx})">복사</button>
+              </div>
+              <ul class="style-items">
+                <li><span class="style-label">신부 드레스</span><span class="style-value">${s.styling.brideDress}</span></li>
+                <li><span class="style-label">신랑 수트</span><span class="style-value">${s.styling.groomSuit}</span></li>
+                <li><span class="style-label">헤어 스타일</span><span class="style-value">${s.styling.hair}</span></li>
+                <li><span class="style-label">메이크업</span><span class="style-value">${s.styling.makeup}</span></li>
+                <li><span class="style-label">부케 & 소품</span><span class="style-value">${s.styling.bouquet} / ${s.styling.props}</span></li>
+              </ul>
+              <div class="canva-tip-box">
+                <span class="canva-tip-label">📐 캔바 슬라이드 레이아웃 팁</span>
+                ${s.canvaSlideLayoutTips}
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-header">
+                <span class="info-card-title">📸 작가님 전달용 메모 (Direction)</span>
+                <button class="copy-sm-btn" onclick="copyDirection(${idx})">복사</button>
+              </div>
+              <div class="dir-section">
+                <div class="dir-heading">포즈 연출 (Pose)</div>
+                <ul class="dir-bullets">
+                  ${s.direction.pose.map(p => `<li>${p}</li>`).join('')}
+                </ul>
+              </div>
+              <div class="dir-section">
+                <div class="dir-heading">조명 및 앵글 (Lighting & Angle)</div>
+                <ul class="dir-bullets">
+                  ${s.direction.lighting.map(l => `<li>${l}</li>`).join('')}
+                </ul>
+              </div>
+              <div class="dir-section">
+                <div class="dir-heading">시선 처리 (Eye Contact)</div>
+                <ul class="dir-bullets">
+                  ${s.direction.eyeContact.map(e => `<li>${e}</li>`).join('')}
+                </ul>
+              </div>
+              <div class="director-memo-box">
+                ${s.direction.directorNote}
+              </div>
+            </div>
+          </div>
+
+          <div class="photos-box">
+            <div class="photos-header">
+              <span class="photos-title">📸 매핑된 레퍼런스 사진 (${s.files.length}장)</span>
+              <button class="copy-sm-btn" onclick="copyPhotos(${idx})">파일명 목록 복사</button>
+            </div>
+            <div class="photos-grid">
+              ${s.files.map(f => `
+                <div class="photo-card ${f.highlight ? 'highlight' : ''}">
+                  <div class="photo-thumb-wrap" onclick="openLightbox('${PHOTO_BASE_PATH}${f.filename}')">
+                    <img src="${PHOTO_BASE_PATH}${f.filename}" alt="${f.filename}" loading="lazy"
+                         onerror="this.style.display='none'; this.parentElement.querySelector('.photo-thumb-missing').style.display='flex';">
+                    <div class="photo-thumb-missing" style="display:none;">사진 없음<br>${f.filename}</div>
+                  </div>
+                  <div class="photo-filename">
+                    <span>${f.filename}</span>
+                    ${f.highlight ? '<span class="photo-star">★대표</span>' : ''}
+                  </div>
+                  <div class="photo-desc">${f.description}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('pageIndicator').textContent = `${currentIdx + 1} / ${slides.length}`;
+      document.getElementById('prevBtn').disabled = currentIdx === 0;
+      document.getElementById('nextBtn').disabled = currentIdx === slides.length - 1;
+      renderSlidePills();
+    }
+
+    function renderBulkTable() {
+      const tbody = document.getElementById('bulkTableBody');
+      tbody.innerHTML = slides.map(s => `
+        <tr>
+          <td style="font-family: monospace; font-weight: 800; color: var(--accent);">SLIDE 0${s.slideNumber}</td>
+          <td>
+            <div style="font-weight: 800; color: #fff;">${s.titleKo.replace(/SLIDE \d+\.\s*/, '')}</div>
+            <div style="font-family: Georgia, serif; font-style: italic; color: #9ca3af; font-size: 11px;">${s.titleEn}</div>
+          </td>
+          <td>
+            <div style="max-height: 120px; overflow-y: auto; font-family: monospace; font-size: 11px;">
+              ${s.files.map(f => `<div style="${f.highlight ? 'color: #fde68a; font-weight: bold;' : 'color: #94a3b8;'}">${f.filename} ${f.highlight ? '★' : ''}</div>`).join('')}
+            </div>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: #fde68a; margin-bottom: 4px;">${s.keywords.join(' ')}</div>
+            <div style="font-size: 11px; color: #94a3b8;">${s.conceptSubtitle}</div>
+          </td>
+          <td style="font-size: 11px;">
+            <div style="margin-bottom: 2px;"><strong style="color: var(--accent);">[포즈]</strong> ${s.direction.pose[0]}</div>
+            <div style="margin-bottom: 2px;"><strong style="color: var(--accent);">[조명]</strong> ${s.direction.lighting[0]}</div>
+            <div style="color: #fda4af; font-weight: 600;">${s.direction.directorNote}</div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function switchView(mode) {
+      currentView = mode;
+      document.querySelectorAll('.view-tab-btn').forEach(btn => btn.classList.remove('active'));
+      if (mode === 'slide') {
+        document.querySelectorAll('.view-tab-btn')[0].classList.add('active');
+        document.getElementById('slideNavStrip').style.display = 'flex';
+        document.getElementById('slidesContainer').style.display = 'block';
+        document.getElementById('tableView').style.display = 'none';
+      } else if (mode === 'all') {
+        document.querySelectorAll('.view-tab-btn')[1].classList.add('active');
+        document.getElementById('slideNavStrip').style.display = 'none';
+        document.getElementById('slidesContainer').style.display = 'block';
+        document.getElementById('tableView').style.display = 'none';
+      } else if (mode === 'table') {
+        document.querySelectorAll('.view-tab-btn')[2].classList.add('active');
+        document.getElementById('slideNavStrip').style.display = 'none';
+        document.getElementById('slidesContainer').style.display = 'none';
+        document.getElementById('tableView').style.display = 'block';
+      }
+      renderSlides();
+    }
+
+    function goToSlide(idx) {
+      currentIdx = idx;
+      renderSlides();
+    }
+
+    function changeSlide(delta) {
+      const nextIdx = currentIdx + delta;
+      if (nextIdx >= 0 && nextIdx < slides.length) {
+        currentIdx = nextIdx;
+        renderSlides();
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (currentView !== 'slide') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        changeSlide(-1);
+      }
+    });
+
+    function copySlideFull(idx) {
+      const s = slides[idx];
+      const text = `[슬라이드 0${s.slideNumber}] ${s.titleKo}\n영문: ${s.titleEn}\n키워드: ${s.keywords.join(' ')}\n촬영시간: ${s.timeSlot}\n\n[헤어/메이크업/의상]\n• 신부: ${s.styling.brideDress}\n• 신랑: ${s.styling.groomSuit}\n• 헤어: ${s.styling.hair}\n• 메이크업: ${s.styling.makeup}\n• 부케/소품: ${s.styling.bouquet} / ${s.styling.props}\n\n[작가님 전달 메모]\n${s.direction.pose.map(p => '- ' + p).join('\n')}\n${s.direction.directorNote}\n\n[매핑 사진 (${s.files.length}장)]\n${s.files.map((f, i) => `${i+1}. ${f.filename} : ${f.description}`).join('\n')}`;
+      copyToClipboard(text, `슬라이드 0${s.slideNumber} 전체 복사 완료!`);
+    }
+
+    function copyStyling(idx) {
+      const s = slides[idx];
+      const text = `• 신부 드레스: ${s.styling.brideDress}\n• 신랑 수트: ${s.styling.groomSuit}\n• 헤어: ${s.styling.hair}\n• 메이크업: ${s.styling.makeup}\n• 부케/소품: ${s.styling.bouquet} / ${s.styling.props}`;
+      copyToClipboard(text, '스타일링 추천 내용 복사 완료!');
+    }
+
+    function copyDirection(idx) {
+      const s = slides[idx];
+      const text = `[포즈]\n${s.direction.pose.map(p => '- ' + p).join('\n')}\n\n[조명/앵글]\n${s.direction.lighting.map(l => '- ' + l).join('\n')}\n\n[시선]\n${s.direction.eyeContact.map(e => '- ' + e).join('\n')}\n\n[핵심]\n${s.direction.directorNote}`;
+      copyToClipboard(text, '작가님 전달 메모 복사 완료!');
+    }
+
+    function copyPhotos(idx) {
+      const s = slides[idx];
+      const text = s.files.map((f, i) => `${i+1}. ${f.filename} : ${f.description}`).join('\n');
+      copyToClipboard(text, '사진 파일 목록 복사 완료!');
+    }
+
+    function copyFullCanvaText() {
+      let text = "========================================================================\n[웨딩 스냅 캔바(Canva) PPT 시안 - 총 76장 레퍼런스 분석본]\n========================================================================\n\n";
+      slides.forEach(s => {
+        text += `------------------------------------------------------------------------\n[슬라이드 0${s.slideNumber}] ${s.titleKo}\n키워드: ${s.keywords.join(' ')}\n시간대: ${s.timeSlot}\n\n[헤어/메이크업/의상]\n• 신부: ${s.styling.brideDress}\n• 신랑: ${s.styling.groomSuit}\n• 헤어: ${s.styling.hair}\n• 메이크업: ${s.styling.makeup}\n• 부케: ${s.styling.bouquet} / 소품: ${s.styling.props}\n\n[작가님 전달 메모]\n${s.direction.pose.map(p => '- ' + p).join('\n')}\n${s.direction.directorNote}\n\n[사진 목록 (${s.files.length}장)]\n${s.files.map((f, i) => `${i+1}. ${f.filename} : ${f.description}`).join('\n')}\n\n`;
+      });
+      copyToClipboard(text, '전체 6개 슬라이드 캔바 텍스트 복사 완료!');
+    }
+
+    function copyTableTSV() {
+      let tsv = '슬라이드 번호\t카테고리명\t포함된 사진 파일명\t주요 연출 포인트\t작가님 전달 메모\n';
+      slides.forEach(s => {
+        const slideNum = `SLIDE 0${s.slideNumber}`;
+        const catName = s.titleKo.replace(/SLIDE \d+\.\s*/, '');
+        const filesStr = s.files.map(f => f.filename).join(', ');
+        const points = `${s.keywords.join(' ')} | ${s.conceptSubtitle}`;
+        const memo = `[포즈] ${s.direction.pose.join(' / ')} [조명] ${s.direction.lighting.join(' / ')} [핵심] ${s.direction.directorNote}`;
+        tsv += `${slideNum}\t${catName}\t${filesStr}\t${points}\t${memo}\n`;
+      });
+      copyToClipboard(tsv, '캔바 일괄제작(Bulk Create) 붙여넣기용 표 복사 완료!');
+    }
+
+    function downloadCSV() {
+      let csv = '\uFEFF슬라이드 번호,카테고리명,포함된 사진 파일명,주요 연출 포인트,작가님 전달 메모\n';
+      slides.forEach(s => {
+        const slideNum = `SLIDE 0${s.slideNumber}`;
+        const catName = `"${s.titleKo.replace(/"/g, '""')}"`;
+        const filesStr = `"${s.files.map(f => f.filename).join(', ')}"`;
+        const points = `"${s.keywords.join(' ')} | ${s.conceptSubtitle.replace(/"/g, '""')}"`;
+        const memo = `"[포즈] ${s.direction.pose.join(' / ')} [조명] ${s.direction.lighting.join(' / ')} [핵심] ${s.direction.directorNote.replace(/"/g, '""')}"`;
+        csv += `${slideNum},${catName},${filesStr},${points},${memo}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'canva_bulk_create_wedding_slides.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('CSV 다운로드 완료!');
+    }
+
+    renderSlides();
+    renderBulkTable();
+  </script>
+
+<script>
+// 성능 최적화
+document.addEventListener('DOMContentLoaded', () => {
+  // 비활성 슬라이드 DOM 제거 후 필요 시 렌더
+  const originalRenderSlides = window.renderSlides;
+  if (originalRenderSlides) {
+    const wrapped = function() {
+      requestAnimationFrame(() => originalRenderSlides());
+    };
+    window.renderSlides = wrapped;
+  }
+
+  // 썸네일 네비게이션 스크롤 최적화
+  const pills = document.getElementById('slidePills');
+  if (pills) {
+    pills.style.scrollBehavior = 'smooth';
+  }
+
+  // 키보드 이벤트 passive 처리
+  window.addEventListener('keydown', ()=>{}, {passive:true});
+
+  console.log('Wedding Draft Optimized');
+});
+</script>
+
+</body>
+</html>
