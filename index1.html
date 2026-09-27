@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>웨딩 스냅 캔바(Canva) PPT 시안 - 제주 노을 & 블랙 드레스</title>
+  <title>푸꾸옥 셀프 스냅 시안</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <style>
     :root {
@@ -518,50 +518,6 @@
       color: var(--text-muted);
       line-height: 1.4;
     }
-    #passwordGate {
-      position: fixed;
-      inset: 0;
-      z-index: 5000;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 16px;
-      padding: 20px;
-      text-align: center;
-    }
-    #passwordGate.hidden { display: none; }
-    #passwordGate h1 {
-      font-size: 18px;
-      font-weight: 800;
-      color: #fff;
-    }
-    #passwordGate input {
-      width: 220px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--card-sub);
-      color: var(--text);
-      font-size: 15px;
-      text-align: center;
-    }
-    #passwordGate button {
-      padding: 10px 24px;
-      border-radius: 10px;
-      border: none;
-      background: var(--accent);
-      color: #000;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    #passwordGate .pw-error {
-      color: var(--rose);
-      font-size: 12px;
-      min-height: 16px;
-    }
-    body.locked > *:not(#passwordGate) { display: none !important; }
     #toast {
       position: fixed;
       bottom: 24px;
@@ -661,40 +617,14 @@
     }
   </style>
 </head>
-<body class="locked">
-  <div id="passwordGate">
-    <h1>🔒 비밀번호를 입력해주세요</h1>
-    <input type="password" id="pwInput" placeholder="비밀번호" autocomplete="off">
-    <button onclick="checkPassword()">입장하기</button>
-    <div class="pw-error" id="pwError"></div>
-  </div>
-  <script>
-    const SITE_PASSWORD = "1127";
-    function checkPassword() {
-      const val = document.getElementById('pwInput').value;
-      if (val === SITE_PASSWORD) {
-        document.body.classList.remove('locked');
-        document.getElementById('passwordGate').classList.add('hidden');
-        sessionStorage.setItem('wedding_site_unlocked', 'true');
-      } else {
-        document.getElementById('pwError').textContent = '비밀번호가 올바르지 않습니다.';
-      }
-    }
-    document.getElementById('pwInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') checkPassword();
-    });
-    if (sessionStorage.getItem('wedding_site_unlocked') === 'true') {
-      document.body.classList.remove('locked');
-      document.getElementById('passwordGate').classList.add('hidden');
-    }
-  </script>
+<body>
   <header>
     <div class="header-inner">
       <div class="brand">
         <div class="brand-icon">✨</div>
         <div>
           <div class="brand-title">
-            제주 노을 & 바다 웨딩 스냅 Canva PPT 시안
+            푸꾸옥 셀프 스냅 시안
             <span class="brand-badge">76장 전수 분류</span>
           </div>
           <div class="brand-sub">Canva 일괄 제작(Bulk Create) 및 시안 디렉터 단일 웹페이지</div>
